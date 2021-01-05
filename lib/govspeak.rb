@@ -374,7 +374,7 @@ module Govspeak
       %(<govspeak-embed-attachment-link id="#{attachment_id}"></govspeak-embed-attachment-link>)
     end
 
-    extension("Accordion", /#{NEW_PARAGRAPH_LOOKBEHIND}\$Accordion\s*$(.*?)\$EndAccordion/m) do |body|
+    extension("Accordion", /\$Accordion\s*$(.*?)\$EndAccordion/m) do |body|
       sections = ""
       index = 1
       body.scan(/\$Heading\s*([\s\S]*?)\s*\$EndHeading\s*\$Summary\s*([\s\S]*?)\s*\$EndSummary\s*\$Content\s*([\s\S]*?)\s*\$EndContent/) do |heading, summary, content|
