@@ -35,13 +35,45 @@ class Govspeak::HtmlSanitizer
     end
   end
 
+  class YoutubeTransformer
+    def call(sanitize_context)
+      node      = sanitize_context[:node]
+      node_name = sanitize_context[:node_name]
+
+      # Don't continue if this node is already allowlisted or is not an element.
+      return if sanitize_context[:is_allowlisted] || !node.element?
+
+      # Don't continue unless the node is an iframe.
+      return unless node_name == "iframe"
+
+      # Verify that the video URL is actually a valid YouTube video URL.
+      return unless node["src"] =~ %r{\A(?:https?:)?//(?:www\.)?((youtube)|(youtu\.be))(?:-nocookie)?\.com/}
+
+      # We're now certain that this is a YouTube embed, but we still need to run
+      # it through a special Sanitize step to ensure that no unwanted elements or
+      # attributes that don't belong in a YouTube embed can sneak in.
+      Sanitize.node!(node, {
+        elements: %w[iframe],
+
+        attributes: {
+          "iframe" => %w[allowfullscreen frameborder height src width title allow],
+        },
+      })
+
+      # Now that we're sure that this is a valid YouTube embed and that there are
+      # no unwanted elements or attributes hidden inside it, we can tell Sanitize
+      # to allowlist the current node.
+      { node_allowlist: [node] }
+    end
+  end
+
   def initialize(dirty_html, options = {})
     @dirty_html = dirty_html
     @allowed_image_hosts = options[:allowed_image_hosts]
   end
 
   def sanitize
-    transformers = [TableCellTextAlignWhitelister.new]
+    transformers = [TableCellTextAlignWhitelister.new, YoutubeTransformer.new]
     if @allowed_image_hosts && @allowed_image_hosts.any?
       transformers << ImageSourceWhitelister.new(@allowed_image_hosts)
     end

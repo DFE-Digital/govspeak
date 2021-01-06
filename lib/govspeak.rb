@@ -374,10 +374,10 @@ module Govspeak
       %(<govspeak-embed-attachment-link id="#{attachment_id}"></govspeak-embed-attachment-link>)
     end
 
-    extension("Accordion", /\$Accordion\s*$(.*?)\$EndAccordion/m) do |body|
+    extension("Accordion", /\$Accordion\s*$(.*?)\s*\$EndAccordion/m) do |body|
       sections = ""
       index = 1
-      body.scan(/\$Heading\s*([\s\S]*?)\s*\$EndHeading\s*\$Summary\s*([\s\S]*?)\s*\$EndSummary\s*\$Content\s*([\s\S]*?)\s*\$EndContent/) do |heading, summary, content|
+      body.scan(/\$Heading\s*(.*?)\s*\$EndHeading\s*\$Summary\s*(.*?)\s*\$EndSummary\s*\$Content\s*(.*?)\s*\$EndContent/m) do |heading, summary, content|
         if summary.present?
           summary = %(
       <div>#{summary}</div>)
@@ -398,6 +398,12 @@ module Govspeak
         index += 1
       end
       %(<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">#{sections}</div>)
+    end
+
+    extension("YoutubeVideo", /\$YoutubeVideo\((.*?)\)\$EndYoutubeVideo/m) do |youtube_link|
+      youtube_id = youtube_link.scan(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/)[0][1]
+      embed_url = %(https://www.youtube.com/embed/#{youtube_id}?enablejsapi=1&amp;origin=https%3A%2F%2Fwww.early-career-framework.education.gov.uk)
+      %(<iframe class="govspeak-embed-video" title="B1" width="500" height="281" src="#{embed_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>)
     end
 
   private
