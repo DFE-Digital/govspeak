@@ -12,7 +12,7 @@ class GovspeakTest < Minitest::Test
   end
 
   test_given_govspeak "{button secondary}[Start now](https://www.registertovote.service.gov.uk/register-to-vote/start){/button}" do
-    assert_html_output '<p><a class="gem-c-button govuk-button gem-c-button--secondary govuk-button--secondary" role="button" href="https://www.registertovote.service.gov.uk/register-to-vote/start">Start now</a></p>'
+    assert_html_output '<p><a class="govuk-button govuk-button--secondary" role="button" href="https://www.registertovote.service.gov.uk/register-to-vote/start">Start now</a></p>'
     assert_text_output "Start now"
   end
 

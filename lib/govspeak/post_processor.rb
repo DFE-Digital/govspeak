@@ -121,7 +121,7 @@ module Govspeak
           options,
         ).squish.gsub("> <", "><").gsub!(/\s+/, " ")
 
-        button_html["gem-c-button govuk-button gem-c-button--secondary govuk-button--secondary"] = "govuk-button govuk-button--secondary" if secondary
+        button_html["gem-c-button govuk-button gem-c-button--secondary"] = "govuk-button govuk-button--secondary" if secondary
         el.swap(button_html)
       end
     end
