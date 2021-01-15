@@ -72,7 +72,6 @@ class Govspeak::HtmlSanitizer
     @allowed_image_hosts = options[:allowed_image_hosts]
   end
 
-
   def sanitize(allowed_elements: [])
     transformers = [TableCellTextAlignWhitelister.new, YoutubeTransformer.new]
     if @allowed_image_hosts && @allowed_image_hosts.any?

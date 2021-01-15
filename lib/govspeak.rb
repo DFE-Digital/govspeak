@@ -108,7 +108,9 @@ module Govspeak
     end
 
     def preprocess(source)
-      source = Govspeak::BlockquoteExtraQuoteRemover.remove(source)
+      unless @options["allow_extra_quotes"]
+        source = Govspeak::BlockquoteExtraQuoteRemover.remove(source)
+      end
       source = remove_forbidden_characters(source)
       self.class.extensions.each do |_, regexp, block|
         source.gsub!(regexp) do
